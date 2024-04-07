@@ -8,6 +8,8 @@ Created on 9 Mar 2023
 
 import math
 
+import time
+
 from common.scenarios import corridor_scenario
 
 from common.airport_map_drawer import AirportMapDrawer
@@ -47,11 +49,19 @@ if __name__ == '__main__':
     value_function_drawer = ValueFunctionDrawer(policy_learner.value_function(), drawer_height)    
     greedy_optimal_policy_drawer = LowLevelPolicyDrawer(policy_learner.policy(), drawer_height)
     
+    times = []
     for i in range(40):
         print(i)
+        start_time = time.time()
         policy_learner.find_policy()
         value_function_drawer.update()
         greedy_optimal_policy_drawer.update()
         pi.set_epsilon(1/math.sqrt(1+0.25*i))
+        end_time = time.time()
+        t = end_time - start_time
+        times.append(t)
+        print("time = ", t)
         print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
+
+    print(times)
         

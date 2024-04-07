@@ -54,4 +54,7 @@ if __name__ == '__main__':
         greedy_optimal_policy_drawer.update()
         pi.set_epsilon(1/math.sqrt(1+0.25*i))
         print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
+
+    print(policy_learner.policy().show())
+    print(policy_learner.value_function().show())
         

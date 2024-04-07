@@ -24,4 +24,11 @@ class TabularValueFunction(Grid):
         
     def value(self, x, y) -> float:
         return self._values[x, y]
+    
+    def show(self):
+        for y in reversed(range(self._height)):
+            line_string = "{0:.3g}".format(self._values[0][y])
+            for x in range(1, self._width):
+                line_string += " " + "{0:.3g}".format(self._values[x][y])
+            print(line_string)
        
