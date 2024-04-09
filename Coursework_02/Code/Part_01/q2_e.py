@@ -9,7 +9,7 @@ Created on 9 Mar 2023
 import math
 
 import time
-
+import numpy as np
 from common.scenarios import corridor_scenario
 
 from common.airport_map_drawer import AirportMapDrawer
@@ -48,20 +48,36 @@ if __name__ == '__main__':
     # The drawers for the state value and the policy
     value_function_drawer = ValueFunctionDrawer(policy_learner.value_function(), drawer_height)    
     greedy_optimal_policy_drawer = LowLevelPolicyDrawer(policy_learner.policy(), drawer_height)
+    mins = np.full(40, float('inf'))
+    maxs = np.full(40, 0)
+    means = np.full(40, float(0))
+    iterations = 100
+    for x in range(iterations):
+        times = []
+        for i in range(40):
+            #print(i)
+            start_time = time.time()
+            policy_learner.find_policy()
+            value_function_drawer.update()
+            greedy_optimal_policy_drawer.update()
+            pi.set_epsilon(1/math.sqrt(1+0.25*i))
+            end_time = time.time()
+            t = end_time - start_time
+            times.append(t)
+            means[i] += t
+            if t > maxs[i]:
+                maxs[i] = t
+            if t < mins[i]:
+                mins[i] = t
+            #print("time = ", t)
+            #print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
+        #print(times)
     
-    times = []
-    for i in range(40):
-        print(i)
-        start_time = time.time()
-        policy_learner.find_policy()
-        value_function_drawer.update()
-        greedy_optimal_policy_drawer.update()
-        pi.set_epsilon(1/math.sqrt(1+0.25*i))
-        end_time = time.time()
-        t = end_time - start_time
-        times.append(t)
-        print("time = ", t)
-        print(f"epsilon={1/math.sqrt(1+i)};alpha={policy_learner.alpha()}")
+    means /= float(iterations)
+    ranges = []
+    for x in range(len(mins)):
+        ranges.append(maxs[x] - mins[x])
 
-    print(times)
+    print("means: ", means)
+    print("ranges: ", ranges)
         

@@ -59,5 +59,4 @@ class SARSA(TDController):
         new_q = reward#(1 - self._alpha) * self._Q[coords[0], coords[1], a] + self._alpha * reward
         
         self._update_q_and_policy(coords, a, new_q)
-     
-        
+        self.total_reward += reward

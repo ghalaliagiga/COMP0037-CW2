@@ -35,6 +35,10 @@ class TDController(TDAlgorithmBase):
         
         # Allocate Q
         self._Q = -100 * np.ones((w, h, self._num_actions))
+        self.total_reward = 0  # Initialize total reward
+    
+    def get_total_reward(self):
+        return self.total_reward  # Method to get total reward
 
     def set_initial_policy(self, pi):
         self._pi = pi

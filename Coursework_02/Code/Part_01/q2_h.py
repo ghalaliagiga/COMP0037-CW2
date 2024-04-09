@@ -58,11 +58,28 @@ if __name__ == '__main__':
     v_renderers[1] = ValueFunctionDrawer(learners[1].value_function(), drawer_height)    
     p_renderers[1] = LowLevelPolicyDrawer(learners[1].policy(), drawer_height)
 
-    for i in range(10000):
+    total_rewards = [0] * 2  # Initialize total rewards for each learner
+    for i in range(10000):#10000
         print(i)
         for l in range(2):
             learners[l].find_policy()
+            total_rewards[l] += learners[l].get_total_reward()  # Update total reward
             v_renderers[l].update()
             p_renderers[l].update()
             pi[l].set_epsilon(1/math.sqrt(1+0.25*i))
+
+    print("Total reward for SARSA: ", total_rewards[0])
+    print("Total reward for Q-Learning: ", total_rewards[1])
+    print("-------------------------------------------------------------------")
+    print(learners[0].policy().show())
+    print(learners[0].value_function().show())
+    print("-------------------------------------------------------------------")
+    print(learners[1].policy().show())
+    print(learners[1].value_function().show())
+
+    """
+    Compare the performance of Q-learning and SARSA on the corridor scenario using q2 h.py. 
+    What do you notice about the state values and the extracted policies for each algorithm? 
+    What do you think might be the reason for this?
+    """
         
