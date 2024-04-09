@@ -40,7 +40,7 @@ if __name__ == '__main__':
     v_pe.update()  
 
     # Range of alpha values    
-    alpha_values = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1]
+    alpha_values = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 0.75,  1]
     
     num_values = len(alpha_values)
     
