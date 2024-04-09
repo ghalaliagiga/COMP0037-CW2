@@ -1,20 +1,28 @@
-'''
-Created on 8 Mar 2023
+from common.scenarios import test_three_row_scenario
+from common.airport_map_drawer import AirportMapDrawer
 
-@author: ucacsjj
-'''
+from td.td_policy_predictor import TDPolicyPredictor
+from monte_carlo.on_policy_mc_predictor import OnPolicyMCPredictor
+from monte_carlo.off_policy_mc_predictor import OffPolicyMCPredictor
 
-from monte_carlo.episode_sampler import EpisodeSampler
+from generalized_policy_iteration.value_function_drawer import ValueFunctionDrawer
+from generalized_policy_iteration.policy_evaluator import PolicyEvaluator
 
-from .td_algorithm_base import TDAlgorithmBase
-
+from p1.low_level_environment import LowLevelEnvironment
+from p1.low_level_actions import LowLevelActionType
+from p1.low_level_policy_drawer import LowLevelPolicyDrawer
 class TDPolicyPredictor(TDAlgorithmBase):
 
-    def __init__(self, environment,alpha,gamma):
+  class TDPolicyPredictor(TDAlgorithmBase):
+
+    def __init__(self, environment, alpha, gamma):
+        super().__init__(environment)  # Assuming Python 3 syntax for simplicity
         
-        TDAlgorithmBase.__init__(self, environment)
-        
-        self._minibatch_buffer= [None]
+        self._alpha = alpha
+        self._gamma = gamma
+        self._minibatch_buffer = []
+        # Initialize other necessary attributes here
+
                 
     def set_target_policy(self, policy):        
         self._pi = policy        
@@ -48,17 +56,35 @@ class TDPolicyPredictor(TDAlgorithmBase):
                 
             self._add_episode_to_experience_replay_buffer(new_episode)
             
+
     def _update_value_function_from_episode(self, episode):
+    # Assume alpha and gamma are defined; if not, they need to be set as part of the class
+     alpha = self._learning_rate
+     gamma = self._discount_factor
+
+    # Iterate through the episode, excluding the terminal state
+    for i in range(len(episode) - 1):
+        current_state, action, reward, next_state = episode[i]
+        
+        # TD(0) Update for the value function
+        # V(S) = V(S) + alpha * (reward + gamma * V(S') - V(S))
+        current_value = self._v.get_value(current_state)
+        next_value = self._v.get_value(next_state)
+        td_target = reward + gamma * next_value
+        td_error = td_target - current_value
+        new_value = current_value + alpha * td_error
+        
+        # Update the value function for the current state
+        self._v.set_value(current_state, new_value)
 
         # Q1e:
         # Complete implementation of this method
         # Each time you update the state value function, you will need to make a
         # call of the form:
         #
-        # self._v.set_value(x_cell_coord, y_cell_coord, new_v)
+        self._v.set_value(x_cell_coord, y_cell_coord, new_v)
 
         # Example to show how to extract coordinates; this does not do anything useful
         coords = episode.state(0).coords()
         new_v = 0
         self._v.set_value(coords[0], coords[1], new_v)
-
